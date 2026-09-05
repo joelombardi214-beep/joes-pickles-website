@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joe's Pickles | Small Batch Crunch</title>
+
+    <style>
+        :root {
+            --ink: #18342a;
+            --pickle: #16865b;
+            --pickle-dark: #0d6847;
+            --yellow: #ffd83d;
+            --paper: #fff7dc;
+            --sky: #d9f2eb;
+            --line: rgba(24, 52, 42, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            background: var(--sky);
+            color: var(--ink);
+            font-family: 'Trebuchet MS', Verdana, sans-serif;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        header {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            height: clamp(350px, 30vw, 300px);
+            overflow: hidden;
+            background: hwb(110 1% 77%);
+        }
+
+        header img {
+            width: min(100%, 800px);
+            height: 122%;
+            display: block;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .cart-button {
+            position: absolute;
+            top: 18px;
+            right: clamp(16px, 5vw, 56px);
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            border: 2px solid var(--yellow);
+            border-radius: 999px;
+            padding: 10px 16px;
+            background: var(--yellow);
+            color: var(--ink);
+            font: 700 0.95rem 'Trebuchet MS', Verdana, sans-serif;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 var(--ink);
+            transition: transform 160ms ease, box-shadow 160ms ease;
+        }
+
+        .cart-button:hover,
+        .cart-button:focus-visible {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 var(--ink);
+        }
+
+        .cart-icon {
+            width: 19px;
+            height: 19px;
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 2;
+        }
+
+        .cart-total-display {
+            margin-left: 2px;
+            padding-left: 9px;
+            border-left: 1px solid rgba(24, 52, 42, 0.35);
+        }
+
+        main {
+            width: min(100% - 32px, 980px);
+            margin: 0 auto;
+            padding: 42px 0 72px;
+            background: var(--sky);
+        }
+
+        .intro {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            margin: 0 0 7px;
+            color: var(--pickle);
+            font: 700 0.76rem 'Trebuchet MS', Verdana, sans-serif;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            max-width: 520px;
+            margin: 0;
+            color: var(--pickle-dark);
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: clamp(2.1rem, 6vw, 4.3rem);
+            line-height: 0.92;
+            letter-spacing: 0;
+            transform: rotate(-1deg);
+        }
+
+        .intro p {
+            max-width: 265px;
+            margin: 0;
+            font-size: 1.05rem;
+            line-height: 1.35;
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 500px);
+            gap: 22px;
+            align-items: start;
+            justify-content: start;
+        }
+
+        .product-card,
+        .cart-panel {
+            border: 2px solid var(--ink);
+            border-radius: 8px;
+            box-shadow: 7px 7px 0 var(--red);
+        }
+
+        .product-card {
+            overflow: hidden;
+            background: var(--paper);
+        }
+
+        .product-art {
+            display: grid;
+            place-items: center;
+            min-height: 220px;
+            padding: 28px;
+            overflow: hidden;
+            background: var(--pickle);
+        }
+
+        .product-image {
+            width: min(100%, 270px);
+            height: 270px;
+            display: block;
+            object-fit: contain;
+            border: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .jar {
+            position: relative;
+            width: min(52%, 145px);
+            aspect-ratio: 0.7;
+            border: 4px solid var(--ink);
+            border-radius: 24px 24px 30px 30px;
+            background: #b8d33d;
+            box-shadow: inset -13px 0 rgba(13, 104, 71, 0.16), 8px 8px 0 var(--ink);
+        }
+
+        .jar::before {
+            position: absolute;
+            top: -25px;
+            left: -9px;
+            width: calc(100% + 18px);
+            height: 28px;
+            border: 4px solid var(--ink);
+            border-radius: 8px 8px 3px 3px;
+            background: var(--yellow);
+            content: '';
+        }
+
+        .jar::after {
+            position: absolute;
+            top: 36%;
+            left: 12%;
+            width: 76%;
+            padding: 13px 0;
+            background: var(--paper);
+            color: var(--pickle-dark);
+            content: 'JOE\A PICKLES';
+            white-space: pre;
+            text-align: center;
+            font: 700 0.85rem 'Trebuchet MS', Verdana, sans-serif;
+            line-height: 1.1;
+        }
+
+        .product-info {
+            padding: 24px;
+        }
+
+        .product-info h2 {
+            margin: 0 0 8px;
+            color: var(--pickle-dark);
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 2rem;
+            line-height: 1;
+        }
+
+        .product-info p {
+            margin: 0 0 20px;
+            color: #315247;
+            font-size: 1rem;
+            line-height: 1.45;
+        }
+
+        .product-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+        .price {
+            color: var(--red);
+            font: 700 1.35rem 'Trebuchet MS', Verdana, sans-serif;
+        }
+
+        .add-button {
+            border: 2px solid var(--ink);
+            border-radius: 999px;
+            padding: 12px 18px;
+            background: var(--pickle);
+            color: #fff;
+            font: 700 0.9rem 'Trebuchet MS', Verdana, sans-serif;
+            cursor: pointer;
+        }
+
+        .add-button:hover,
+        .add-button:focus-visible {
+            background: var(--pickle-dark);
+        }
+
+        .cart-panel {
+            padding: 24px;
+            background: #fff0a7;
+        }
+
+        .cart-drawer {
+            position: fixed;
+            z-index: 10;
+            top: 78px;
+            right: 20px;
+            width: min(390px, calc(100% - 40px));
+            max-height: calc(100vh - 98px);
+            overflow-y: auto;
+            box-shadow: 8px 8px 0 var(--red);
+        }
+
+        .cart-close {
+            float: right;
+            border: 0;
+            background: transparent;
+            color: var(--ink);
+            font-size: 1.4rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .cart-panel h2 {
+            margin: 0 0 18px;
+            color: var(--pickle-dark);
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 1.8rem;
+        }
+
+        .cart-empty {
+            margin: 0;
+            padding: 18px 0;
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            color: #4f572a;
+            line-height: 1.4;
+        }
+
+        .cart-item,
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .cart-item {
+            align-items: center;
+            padding: 14px 0;
+            border-top: 1px solid var(--line);
+            font-weight: 700;
+        }
+
+        .remove-button {
+            flex: 0 0 auto;
+            border: 0;
+            padding: 4px 0;
+            background: transparent;
+            color: var(--pickle-dark);
+            font: 700 0.78rem 'Trebuchet MS', Verdana, sans-serif;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .remove-button:hover,
+        .remove-button:focus-visible {
+            color: var(--ink);
+        }
+
+        .cart-total {
+            margin-top: 8px;
+            padding-top: 16px;
+            border-top: 2px solid var(--ink);
+            font: 700 1.1rem 'Trebuchet MS', Verdana, sans-serif;
+        }
+
+        .checkout-button,
+        .stripe-button {
+            width: 100%;
+            border: 2px solid var(--ink);
+            border-radius: 999px;
+            padding: 12px 16px;
+            font: 700 0.9rem 'Trebuchet MS', Verdana, sans-serif;
+            cursor: pointer;
+        }
+
+        .checkout-button {
+            margin-top: 18px;
+            background: var(--pickle);
+            color: #fff;
+        }
+
+        .stripe-button {
+            background: #000;
+            color: #fff;
+        }
+
+        .checkout-button:hover,
+        .checkout-button:focus-visible,
+        .stripe-button:hover,
+        .stripe-button:focus-visible {
+            transform: translateY(-1px);
+        }
+
+        .checkout-form {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--line);
+        }
+
+        .checkout-form h3 {
+            margin: 0 0 12px;
+            font: 700 1.15rem Georgia, 'Times New Roman', serif;
+        }
+
+        .payment-note,
+        .payment-status {
+            margin: 10px 0 0;
+            color: #4f572a;
+            font-size: 0.75rem;
+            line-height: 1.35;
+        }
+
+        .payment-status {
+            color: var(--pickle-dark);
+            font-weight: 700;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 680px) {
+            .cart-button {
+                top: 12px;
+                right: 12px;
+                padding: 8px 11px;
+            }
+
+            .intro,
+            .product-row {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .intro p {
+                max-width: 330px;
+            }
+
+            .shop-grid {
+                grid-template-columns: minmax(0, 500px);
+            }
+
+            .cart-drawer {
+                top: 72px;
+                right: 12px;
+                width: calc(100% - 24px);
+                box-shadow: 5px 5px 0 var(--red);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="joes%20pickles%20label.png" alt="Joes Pickles">
+        <button class="cart-button" type="button" aria-expanded="false" aria-controls="cart-panel">
+            <svg class="cart-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="9" cy="20" r="1"></circle>
+                <circle cx="18" cy="20" r="1"></circle>
+                <path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6"></path>
+            </svg>
+            Cart <span class="cart-count">0</span>
+            <span class="cart-total-display">$0.00</span>
+        </button>
+    </header>
+
+    <main>
+        <section class="intro" aria-labelledby="shop-heading">
+            <div>
+                <p class="eyebrow">NATURALLY FERMENTED PICKLES YOU CAN TRUST
+            
+                </p>
+                <h1 id="shop-heading"><Obj></Obj></Obj>
+                    .</h1>
+            </div>
+            <p> </p>
+        </section>
+
+        <section class="shop-grid" aria-label="Shop Joe's Pickles">
+            <article class="product-card">
+                <div class="product-art">
+                    <img class="product-image" src="joes-pickles-product.png" alt="Joe's Pickles Naturally Fermented label">
+                </div>
+                <div class="product-info">
+                    <h2>Naturally Fermented Pickles</h2>
+                    <p>Classic dill pickles, naturally fermented with simple ingredients.</p>
+                    <ul>
+                        <strong>Ingredients:</strong>
+                        <li>Pickling cucumbers</li>
+                        <li>Water</li>
+                        <li>Salt</li>
+                        <li>Dill weed</li>
+                        <li>Grape leaves</li>
+                    </ul>
+                    <div class="product-row">
+                        <span class="price">$12.00</span>
+                        <button class="add-button" type="button">Add to cart</button>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+    </main>
+
+    <aside class="cart-panel cart-drawer hidden" id="cart-panel" aria-live="polite">
+        <button class="cart-close" type="button" aria-label="Close cart">&times;</button>
+        <h2>Your cart</h2>
+        <p class="cart-empty">Your cart is empty. Add a jar and let the good crunch begin.</p>
+        <div class="cart-details hidden">
+            <div class="cart-item">
+                <span>Naturally Fermented Pickles <span class="item-quantity">x1</span></span>
+                <button class="remove-button" type="button">Remove</button>
+            </div>
+            <div class="cart-total">
+                <span>Total</span>
+                <span class="drawer-total">$0.00</span>
+            </div>
+            <button class="checkout-button" type="button">Checkout</button>
+            <form class="checkout-form hidden">
+                <h3>Secure checkout</h3>
+                <button class="stripe-button" type="submit">Pay securely with Stripe</button>
+                <p class="payment-note">Stripe Checkout can show Apple Pay, credit cards, and debit cards when enabled in your Stripe account.</p>
+                <p class="payment-status" role="status"></p>
+            </form>
+        </div>
+    </aside>
+
+    <script>
+        const addButton = document.querySelector('.add-button');
+        const cartButton = document.querySelector('.cart-button');
+        const cartPanel = document.querySelector('.cart-panel');
+        const cartClose = document.querySelector('.cart-close');
+        const cartEmpty = document.querySelector('.cart-empty');
+        const cartDetails = document.querySelector('.cart-details');
+        const cartCount = document.querySelector('.cart-count');
+        const cartTotalDisplay = document.querySelector('.cart-total-display');
+        const drawerTotal = document.querySelector('.drawer-total');
+        const itemQuantity = document.querySelector('.item-quantity');
+        const removeButton = document.querySelector('.remove-button');
+        const checkoutButton = document.querySelector('.checkout-button');
+        const checkoutForm = document.querySelector('.checkout-form');
+        const paymentStatus = document.querySelector('.payment-status');
+        const stripeCheckoutEndpoint = '/create-checkout-session';
+        const pricePerJar = 12;
+        let quantity = 0;
+
+        function updateCartTotals() {
+            const total = (quantity * pricePerJar).toFixed(2);
+            cartTotalDisplay.textContent = `$${total}`;
+            drawerTotal.textContent = `$${total}`;
+        }
+
+        addButton.addEventListener('click', () => {
+            quantity += 1;
+            cartCount.textContent = quantity;
+            itemQuantity.textContent = `x${quantity}`;
+            updateCartTotals();
+            cartEmpty.classList.add('hidden');
+            cartDetails.classList.remove('hidden');
+            addButton.textContent = `Added (${quantity} in cart)`;
+        });
+
+        removeButton.addEventListener('click', () => {
+            quantity = 0;
+            cartCount.textContent = quantity;
+            itemQuantity.textContent = 'x0';
+            updateCartTotals();
+            cartEmpty.classList.remove('hidden');
+            cartDetails.classList.add('hidden');
+            checkoutForm.classList.add('hidden');
+            checkoutButton.classList.remove('hidden');
+            paymentStatus.textContent = '';
+            addButton.textContent = 'Add to cart';
+        });
+
+        checkoutButton.addEventListener('click', () => {
+            checkoutButton.classList.add('hidden');
+            checkoutForm.classList.remove('hidden');
+        });
+
+        checkoutForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            paymentStatus.textContent = 'Opening secure Stripe checkout...';
+
+            try {
+                const response = await fetch(stripeCheckoutEndpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ quantity })
+                });
+                const session = await response.json();
+
+                if (!response.ok || !session.url) {
+                    throw new Error(session.error || 'Stripe checkout is unavailable.');
+                }
+                window.location.href = session.url;
+            } catch (error) {
+                paymentStatus.textContent = error.message;
+            }
+        });
+
+        cartButton.addEventListener('click', () => {
+            const isExpanded = cartButton.getAttribute('aria-expanded') === 'true';
+            cartButton.setAttribute('aria-expanded', String(!isExpanded));
+            cartPanel.classList.toggle('hidden', isExpanded);
+        });
+
+        cartClose.addEventListener('click', () => {
+            cartButton.setAttribute('aria-expanded', 'false');
+            cartPanel.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
